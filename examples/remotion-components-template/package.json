@@ -1,0 +1,22 @@
+{
+  "name": "talking-edit-test",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "preview": "remotion preview src/index.ts",
+    "render": "remotion render src/index.ts TalkingEdit output/talking-edit-test.mp4",
+    "still": "remotion still src/index.ts TalkingEdit output/still.png --frame=0"
+  },
+  "dependencies": {
+    "@remotion/cli": "latest",
+    "@remotion/media-utils": "latest",
+    "@remotion/player": "latest",
+    "@remotion/renderer": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "remotion": "latest",
+    "typescript": "latest"
+  },
+  "devDependencies": {}
+}

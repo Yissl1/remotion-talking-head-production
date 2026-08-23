@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Talking-head edit script",
+  "type": "object",
+  "required": [
+    "stylePreset",
+    "stylePresetSource",
+    "fps",
+    "width",
+    "height",
+    "themePhrase",
+    "workflow",
+    "scenes"
+  ],
+  "properties": {
+    "stylePreset": {
+      "type": "string",
+      "minLength": 1,
+      "default": "deposited-final-v1"
+    },
+    "stylePresetSource": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fps": {
+      "type": "number",
+      "default": 30
+    },
+    "width": {
+      "type": "integer",
+      "default": 1920
+    },
+    "height": {
+      "type": "integer",
+      "default": 1080
+    },
+    "themePhrase": {
+      "type": "string"
+    },
+    "workflow": {
+      "type": "object",
+      "required": [
+        "state",
+        "scriptConfirmed",
+        "previewConfirmed"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "awaiting-script-confirmation",
+            "rendering-30s-preview",
+            "awaiting-preview-confirmation",
+            "rendering-final",
+            "completed"
+          ]
+        },
+        "scriptConfirmed": {
+          "type": "boolean",
+          "default": false
+        },
+        "previewConfirmed": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": true
+    },
+    "scenes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "start",
+          "end",
+          "startFrame",
+          "endFrame",
+          "mode",
+          "noSpoilerBefore"
+        ],
+        "properties": {
+          "start": {
+            "type": "number"
+          },
+          "end": {
+            "type": "number"
+          },
+          "mode": {
+            "enum": [
+              "speaker",
+              "speaker-material-split",
+              "evidence-stage",
+              "full-material",
+              "mg"
+            ]
+          },
+          "noSpoilerBefore": {
+            "type": "number"
+          },
+          "subtitleCueIds": {
+            "type": "array",
+            "items": {
+              "type": [
+                "integer",
+                "string"
+              ]
+            }
+          },
+          "material": {
+            "type": "object",
+            "properties": {
+              "operationDemo": {
+                "type": "boolean"
+              },
+              "safeRect": {
+                "type": "object",
+                "required": [
+                  "left",
+                  "top",
+                  "width",
+                  "height"
+                ],
+                "properties": {
+                  "left": {
+                    "type": "number"
+                  },
+                  "top": {
+                    "type": "number"
+                  },
+                  "width": {
+                    "type": "number"
+                  },
+                  "height": {
+                    "type": "number"
+                  }
+                }
+              },
+              "groupId": {
+                "type": "string"
+              },
+              "spreadVariant": {
+                "enum": [
+                  "stack-spread",
+                  "fan-spread",
+                  "grid-reveal",
+                  "orbit-spread"
+                ]
+              },
+              "trackingRequired": {
+                "type": "boolean"
+              },
+              "trackPoints": {
+                "type": "array"
+              }
+            },
+            "additionalProperties": true
+          },
+          "speaker": {
+            "type": "object"
+          },
+          "components": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "props"
+              ],
+              "properties": {
+                "name": {
+                  "enum": [
+                    "SubtitleLayer",
+                    "TechCard",
+                    "KeywordChip",
+                    "MetricCard",
+                    "DemoBackdrop",
+                    "DemoPanel",
+                    "SpeakerBubble",
+                    "EvidenceFrame",
+                    "SingleImageEvidence",
+                    "ImageSpread",
+                    "OperationDemoPanel",
+                    "StepFlow",
+                    "ComparePanel",
+                    "DecisionMatrix",
+                    "SceneTransition"
+                  ]
+                },
+                "props": {
+                  "type": "object"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "transitionIn": {
+            "type": "string"
+          },
+          "transitionOut": {
+            "type": "string"
+          },
+          "sfx": {
+            "type": "array"
+          },
+          "startFrame": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "endFrame": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    }
+  }
+}
