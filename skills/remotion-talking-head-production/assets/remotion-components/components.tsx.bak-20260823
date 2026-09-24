@@ -1,0 +1,333 @@
+import React from 'react';
+import {AbsoluteFill, Img, Video, interpolate, spring, useCurrentFrame} from 'remotion';
+
+export type TimedProps = {startFrame:number; endFrame:number};
+export type SafeRect = {left:number; top:number; width:number; height:number};
+
+const clamp = {extrapolateLeft:'clamp', extrapolateRight:'clamp'} as const;
+const INK = '#111315';
+const WHITE = '#F7F8FA';
+const WHITE_SOFT = 'rgba(247,248,250,.72)';
+const WHITE_GLOW = '0 0 18px rgba(247,248,250,.38), 0 0 46px rgba(247,248,250,.18)';
+
+export const enterExit = (frame:number,startFrame:number,endFrame:number,delay=0) => {
+  const enter=spring({frame:Math.max(0,frame-startFrame-delay),fps:30,config:{damping:19,stiffness:185,mass:.72}});
+  const exit=interpolate(endFrame-frame,[0,12],[0,1],clamp);
+  return {opacity:enter*exit,transform:`translateY(${16*(1-enter)+8*(1-exit)}px) scale(${.975+.025*enter-.012*(1-exit)})`};
+};
+
+export const SubtitleLayer:React.FC<{text:string;keywords?:string[]} & TimedProps>=({text,keywords=[],startFrame,endFrame})=>{
+  const frame=useCurrentFrame();
+  if(frame<startFrame||frame>=endFrame)return null;
+  const style=enterExit(frame,startFrame,endFrame);
+  const pattern=keywords.length?new RegExp(`(${keywords.map((x)=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')})`,'g'):null;
+  const pieces=pattern?text.split(pattern):[text];
+  return <div style={{position:'absolute',left:180,right:180,bottom:42,zIndex:140,display:'flex',justifyContent:'center',...style}}>
+    <div style={{maxWidth:1480,color:WHITE,fontSize:40,lineHeight:1.24,fontWeight:800,textAlign:'center',textShadow:'0 3px 12px rgba(0,0,0,.9)'}}>
+      {pieces.map((part,index)=><span key={`${part}-${index}`} style={keywords.includes(part)?{color:WHITE,fontWeight:950,textShadow:WHITE_GLOW}:undefined}>{part}</span>)}
+    </div>
+  </div>;
+};
+
+export const TechCard:React.FC<{kicker:string;title:string;detail?:string;color?:string;boxed?:boolean;edgeGlow?:boolean;rect:SafeRect;align?:'left'|'right'} & TimedProps>=({kicker,title,detail,boxed=false,edgeGlow=false,rect,align='left',startFrame,endFrame})=>{
+  const frame=useCurrentFrame();
+  if(frame<startFrame||frame>=endFrame)return null;
+  const group=enterExit(frame,startFrame,endFrame);
+  const titleMotion=enterExit(frame,startFrame,endFrame,6);
+  const detailMotion=enterExit(frame,startFrame,endFrame,12);
+  return <div style={{position:'absolute',...rect,zIndex:90,color:WHITE,textAlign:align,...group}}>
+    {boxed&&<div style={{position:'absolute',inset:-22,background:'rgba(17,19,21,.94)',border:`1px solid rgba(247,248,250,.54)`,boxShadow:WHITE_GLOW}}/>}
+    <div style={{position:'relative',fontSize:14,letterSpacing:'.16em',fontWeight:900,color:WHITE,textShadow:edgeGlow?WHITE_GLOW:'0 3px 14px rgba(0,0,0,.75)'}}>{kicker}</div>
+    <div style={{position:'relative',marginTop:12,fontSize:46,lineHeight:1.08,fontWeight:950,...titleMotion}}>{title}</div>
+    {detail&&<div style={{position:'relative',marginTop:16,fontSize:22,lineHeight:1.42,color:WHITE_SOFT,...detailMotion}}>{detail}</div>}
+    {edgeGlow&&<div style={{position:'absolute',inset:-10,pointerEvents:'none',border:'1px solid rgba(247,248,250,.7)',boxShadow:WHITE_GLOW,opacity:.72}}/>}
+  </div>;
+};
+
+export const DemoBackdrop:React.FC<{themePhrase:string;color?:string} & TimedProps>=({themePhrase,startFrame,endFrame})=>{
+  const frame=useCurrentFrame();
+  if(frame<startFrame||frame>=endFrame)return null;
+  const group=enterExit(frame,startFrame,endFrame);
+  const phrase=themePhrase.replace(/\s+/g,' ').trim();
+  const repeated=`${phrase}　${phrase}　${phrase}`;
+  const rows=[
+    {top:92,left:-110,size:108,outline:false,opacity:.31},
+    {top:222,left:18,size:102,outline:true,opacity:.43},
+    {top:350,left:-74,size:108,outline:false,opacity:.25},
+    {top:480,left:34,size:102,outline:true,opacity:.36},
+    {top:608,left:-126,size:108,outline:false,opacity:.22},
+    {top:738,left:8,size:102,outline:true,opacity:.32},
+    {top:866,left:-86,size:108,outline:false,opacity:.18},
+    {top:996,left:42,size:102,outline:true,opacity:.27},
+  ] as const;
+  const sheen=interpolate(frame,[startFrame,endFrame],[-25,125],clamp);
+  return <AbsoluteFill style={{background:INK,overflow:'hidden',zIndex:0,...group}}>
+    <AbsoluteFill style={{opacity:.13,backgroundImage:'linear-gradient(rgba(247,248,250,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(247,248,250,.07) 1px,transparent 1px)',backgroundSize:'92px 92px'}}/>
+    <AbsoluteFill style={{background:'radial-gradient(circle at 68% 42%,rgba(247,248,250,.075) 0%,transparent 38%),radial-gradient(circle at 18% 78%,rgba(247,248,250,.05),transparent 30%)'}}/>
+    {rows.map((row,index)=><div key={index} style={{position:'absolute',left:row.left,top:row.top,width:2450,fontSize:row.size,fontWeight:950,letterSpacing:'-.055em',whiteSpace:'nowrap',lineHeight:.92,color:row.outline?'transparent':`rgba(247,248,250,${row.opacity})`,WebkitTextStroke:row.outline?`2px rgba(247,248,250,${row.opacity})`:'0 transparent',textShadow:row.outline?'none':'0 0 18px rgba(247,248,250,.12)'}}>{repeated}</div>)}
+    <div style={{position:'absolute',left:`${sheen}%`,top:-300,width:360,height:1600,transform:'rotate(18deg)',background:'linear-gradient(90deg,transparent,rgba(247,248,250,.10),transparent)',filter:'blur(18px)',opacity:.62}}/>
+  </AbsoluteFill>;
+};
+
+export const DemoPanel:React.FC<{src:string;rect?:SafeRect;fit?:'contain'|'cover';sourceStartFrame?:number;color?:string;edgeGlow?:boolean} & TimedProps>=({src,rect={left:500,top:140,width:1335,height:820},fit='cover',sourceStartFrame=0,edgeGlow=false,startFrame,endFrame})=>{
+  const frame=useCurrentFrame();
+  if(frame<startFrame||frame>=endFrame)return null;
+  const enter=spring({frame:Math.max(0,frame-startFrame),fps:30,config:{damping:20,stiffness:180,mass:.75}});
+  const exit=interpolate(endFrame-frame,[0,13],[0,1],clamp);
+  const clip=interpolate(enter,[0,1],[52,0],clamp);
+  return <div style={{position:'absolute',...rect,zIndex:95,opacity:enter*exit,transform:`translate3d(${54*(1-enter)-18*(1-exit)}px,0,0) scale(${.985+.015*enter})`,clipPath:`inset(0 ${clip}% 0 0 round 4px)`,overflow:'hidden',background:'#f0f4f1',border:'1px solid rgba(247,248,250,.78)',boxShadow:edgeGlow?`0 24px 75px rgba(0,0,0,.62),${WHITE_GLOW}`:'0 24px 75px rgba(0,0,0,.62)'}}>
+    <Video src={src} muted startFrom={sourceStartFrame} style={{width:'100%',height:'100%',objectFit:fit,transform:'scale(1)'}}/>
+  </div>;
+};
+
+export const SpeakerBubble:React.FC<{src:string;rect?:SafeRect;color?:string;edgeGlow?:boolean;objectPosition?:string} & TimedProps>=({src,rect={left:70,top:766,width:250,height:250},edgeGlow=true,objectPosition='50% 42%',startFrame,endFrame})=>{
+  const frame=useCurrentFrame();
+  if(frame<startFrame||frame>=endFrame)return null;
+  const style=enterExit(frame,startFrame,endFrame);
+  return <div style={{position:'absolute',...rect,border:'2px solid rgba(247,248,250,.9)',borderRadius:'50%',overflow:'hidden',zIndex:101,boxShadow:edgeGlow?`0 0 0 7px rgba(0,0,0,.86),${WHITE_GLOW}`:'0 0 0 7px rgba(0,0,0,.86)',...style}}>
+    <Video src={src} muted style={{width:'100%',height:'100%',objectFit:'cover',objectPosition,transform:'scale(1.33)'}}/>
+  </div>;
+};
+
+export const MetricCard:React.FC<{value:number;prefix?:string;suffix?:string;decimals?:number;label?:string;rect:SafeRect;boxed?:boolean;edgeGlow?:boolean} & TimedProps>=({value,prefix='',suffix='',decimals=0,label,rect,boxed=false,edgeGlow=false,startFrame,endFrame})=>{
+  const frame=useCurrentFrame();
+  if(frame<startFrame||frame>=endFrame)return null;
+  const enter=enterExit(frame,startFrame,endFrame);
+  const countFrames=Math.min(18,Math.max(8,endFrame-startFrame-4));
+  const progress=interpolate(frame-startFrame,[0,countFrames],[0,1],clamp);
+  const current=value*progress;
+  const number=current.toFixed(decimals);
+  return <div style={{position:'absolute',...rect,zIndex:92,color:WHITE,...enter}}>
+    {boxed&&<div style={{position:'absolute',inset:-18,background:'rgba(17,19,21,.94)',border:'1px solid rgba(247,248,250,.58)',boxShadow:edgeGlow?WHITE_GLOW:'none'}}/>}
+    <div style={{position:'relative',fontSize:14,letterSpacing:'.15em',fontWeight:900,color:WHITE,textShadow:edgeGlow?WHITE_GLOW:'none'}}>{label}</div>
+    <div style={{position:'relative',marginTop:8,fontSize:72,lineHeight:1,fontWeight:950,letterSpacing:'-.04em',fontVariantNumeric:'tabular-nums',textShadow:edgeGlow?WHITE_GLOW:'none'}}>{prefix}{number}{suffix}</div>
+  </div>;
+};
+
+export const SceneTransition:React.FC<{color?:string} & TimedProps>=({startFrame,endFrame})=>{
+  const frame=useCurrentFrame();
+  if(frame<startFrame||frame>=endFrame)return null;
+  const local=frame-startFrame;
+  const duration=endFrame-startFrame;
+  const opacity=interpolate(local,[0,Math.max(1,duration*.45),duration],[0,.18,0],clamp);
+  const wipe=interpolate(local,[0,duration],[-18,118],clamp);
+  return <AbsoluteFill style={{zIndex:130,pointerEvents:'none',background:`linear-gradient(105deg,transparent ${wipe-12}%,rgba(247,248,250,${opacity}) ${wipe}%,transparent ${wipe+12}%)`}}/>;
+};
+
+
+
+export const KeywordChip:React.FC<{text:string;rect:SafeRect;boxed?:boolean;edgeGlow?:boolean;align?:'left'|'center'|'right'} & TimedProps>=({text,rect,boxed=false,edgeGlow=false,align='left',startFrame,endFrame})=>{
+  const frame=useCurrentFrame();
+  if(frame<startFrame||frame>=endFrame)return null;
+  const motion=enterExit(frame,startFrame,endFrame);
+  return <div style={{position:'absolute',...rect,zIndex:93,display:'flex',justifyContent:align==='right'?'flex-end':align==='center'?'center':'flex-start',...motion}}>
+    <div style={{padding:boxed?'10px 16px':'0',fontSize:24,lineHeight:1.1,fontWeight:900,letterSpacing:'.08em',color:WHITE,background:boxed?'rgba(17,19,21,.9)':'transparent',border:boxed?'1px solid rgba(247,248,250,.55)':'none',boxShadow:edgeGlow?WHITE_GLOW:'none',textShadow:edgeGlow?WHITE_GLOW:'0 3px 14px rgba(0,0,0,.75)'}}>{text}</div>
+  </div>;
+};
+
+export const StepFlow:React.FC<{steps:string[];reveals:number[];rect:SafeRect;activeIndex?:number;edgeGlow?:boolean} & TimedProps>=({steps,reveals,rect,activeIndex,edgeGlow=false,startFrame,endFrame})=>{
+  const frame=useCurrentFrame();
+  if(frame<startFrame||frame>=endFrame)return null;
+  return <div style={{position:'absolute',...rect,zIndex:94,display:'flex',alignItems:'center',gap:14,color:WHITE}}>
+    {steps.map((step,index)=>{
+      const reveal=reveals[index]??startFrame+index*8;
+      if(frame<reveal)return null;
+      const motion=enterExit(frame,reveal,endFrame);
+      const active=activeIndex===index;
+      const lineProgress=index===0?0:interpolate(frame,[reveal,reveal+10],[0,1],clamp);
+      return <React.Fragment key={`${step}-${index}`}>
+        {index>0&&<div style={{width:54,height:2,transform:`scaleX(${lineProgress})`,transformOrigin:'left',background:'rgba(247,248,250,.62)',boxShadow:edgeGlow?WHITE_GLOW:'none'}}/>}
+        <div style={{minWidth:120,padding:'14px 18px',background:active?'rgba(247,248,250,.12)':'rgba(17,19,21,.82)',border:'1px solid rgba(247,248,250,.62)',boxShadow:active||edgeGlow?WHITE_GLOW:'none',fontSize:22,fontWeight:900,textAlign:'center',...motion}}>{step}</div>
+      </React.Fragment>;
+    })}
+  </div>;
+};
+
+export const ComparePanel:React.FC<{leftTitle:string;leftItems:string[];rightTitle:string;rightItems:string[];rect:SafeRect;conclusion?:string;conclusionFrame?:number} & TimedProps>=({leftTitle,leftItems,rightTitle,rightItems,rect,conclusion,conclusionFrame,startFrame,endFrame})=>{
+  const frame=useCurrentFrame();
+  if(frame<startFrame||frame>=endFrame)return null;
+  const group=enterExit(frame,startFrame,endFrame);
+  const column=(title:string,items:string[],offset:number)=><div style={{flex:1,padding:'24px 28px',border:'1px solid rgba(247,248,250,.42)',background:'rgba(17,19,21,.88)'}}>
+    <div style={{fontSize:30,fontWeight:950,color:WHITE}}>{title}</div>
+    <div style={{marginTop:18,display:'grid',gap:12}}>{items.map((item,index)=>frame>=startFrame+offset+index*6?<div key={item} style={{fontSize:21,lineHeight:1.35,color:WHITE_SOFT,...enterExit(frame,startFrame+offset+index*6,endFrame)}}>— {item}</div>:null)}</div>
+  </div>;
+  const showConclusion=conclusion&&frame>=(conclusionFrame??endFrame-24);
+  return <div style={{position:'absolute',...rect,zIndex:94,color:WHITE,...group}}>
+    <div style={{display:'flex',gap:18}}>{column(leftTitle,leftItems,4)}{column(rightTitle,rightItems,8)}</div>
+    {showConclusion&&<div style={{marginTop:18,fontSize:34,fontWeight:950,textAlign:'center',textShadow:WHITE_GLOW,...enterExit(frame,conclusionFrame??endFrame-24,endFrame)}}>{conclusion}</div>}
+  </div>;
+};
+
+export const EvidenceFrame:React.FC<{src:string;mediaType?:'video'|'image';label:string;rect:SafeRect;fit?:'contain'|'cover';sourceStartFrame?:number;edgeGlow?:boolean} & TimedProps>=({src,mediaType='video',label,rect,fit='cover',sourceStartFrame=0,edgeGlow=false,startFrame,endFrame})=>{
+  const frame=useCurrentFrame();
+  if(frame<startFrame||frame>=endFrame)return null;
+  const motion=enterExit(frame,startFrame,endFrame);
+  return <div style={{position:'absolute',...rect,zIndex:96,background:'#0b0d0e',border:'1px solid rgba(247,248,250,.7)',boxShadow:edgeGlow?`0 24px 70px rgba(0,0,0,.62),${WHITE_GLOW}`:'0 24px 70px rgba(0,0,0,.62)',overflow:'hidden',...motion}}>
+    {mediaType==='image'?<Img src={src} style={{width:'100%',height:'100%',objectFit:fit}}/>:<Video src={src} muted startFrom={sourceStartFrame} style={{width:'100%',height:'100%',objectFit:fit}}/>}
+    <div style={{position:'absolute',left:18,top:18,padding:'8px 12px',background:'rgba(17,19,21,.86)',border:'1px solid rgba(247,248,250,.42)',fontSize:16,fontWeight:900,letterSpacing:'.08em',color:WHITE}}>{label}</div>
+  </div>;
+};
+
+export const DecisionMatrix:React.FC<{items:string[];reveals:number[];winnerIndex:number;rect:SafeRect;winnerFrame:number} & TimedProps>=({items,reveals,winnerIndex,rect,winnerFrame,startFrame,endFrame})=>{
+  const frame=useCurrentFrame();
+  if(frame<startFrame||frame>=endFrame)return null;
+  return <div style={{position:'absolute',...rect,zIndex:94,display:'grid',gridTemplateColumns:'repeat(2,minmax(0,1fr))',gap:14}}>
+    {items.map((item,index)=>{
+      const reveal=reveals[index]??startFrame+index*7;
+      if(frame<reveal)return null;
+      const decided=frame>=winnerFrame;
+      const winner=index===winnerIndex;
+      const motion=enterExit(frame,reveal,endFrame);
+      const decisionOpacity=decided && !winner ? .32 : 1;
+      return <div key={item} style={{padding:'18px 22px',fontSize:24,fontWeight:900,color:WHITE,background:winner&&decided?'rgba(247,248,250,.12)':'rgba(17,19,21,.86)',border:`1px solid rgba(247,248,250,${winner && decided ? .9 : .42})`,boxShadow:winner&&decided?WHITE_GLOW:'none',...motion,opacity:motion.opacity*decisionOpacity}}>{item}</div>;
+    })}
+  </div>;
+};
+
+
+
+/** A single still/image evidence item. Default placement is the right side of the speaker. */
+export const SingleImageEvidence:React.FC<{
+  src:string;
+  rect?:SafeRect;
+  label?:string;
+  fit?:'contain'|'cover';
+  edgeGlow?:boolean;
+  reveal?:'slide-right'|'rise'|'fade';
+} & TimedProps>=({src,rect={left:1110,top:170,width:700,height:650},label,fit='contain',edgeGlow=false,reveal='slide-right',startFrame,endFrame})=>{
+  const frame=useCurrentFrame();
+  if(frame<startFrame||frame>=endFrame)return null;
+  const p=interpolate(frame,[startFrame,startFrame+16],[0,1],clamp);
+  const exit=interpolate(endFrame-frame,[0,12],[0,1],clamp);
+  const x=reveal==='slide-right'?(1-p)*54:0;
+  const y=reveal==='rise'?(1-p)*28:0;
+  const scale=reveal==='fade'?1:.985+.015*p;
+  const opacity=Math.min(p,exit);
+  return <div style={{position:'absolute',...rect,zIndex:96,overflow:'hidden',opacity,transform:`translate(${x}px,${y}px) scale(${scale})`,background:'#0b0d0e',border:'1px solid rgba(247,248,250,.72)',boxShadow:edgeGlow?`0 24px 70px rgba(0,0,0,.62),${WHITE_GLOW}`:'0 24px 70px rgba(0,0,0,.62)'}}>
+    <Img src={src} style={{width:'100%',height:'100%',objectFit:fit,display:'block'}}/>
+    {label&&<div style={{position:'absolute',left:16,bottom:16,padding:'7px 11px',background:'rgba(17,19,21,.88)',color:WHITE,fontSize:16,fontWeight:900,letterSpacing:'.06em',...enterExit(frame,startFrame+8,endFrame)}}>{label}</div>}
+  </div>;
+};
+
+type SpreadVariant='stack-spread'|'fan-spread'|'grid-reveal'|'orbit-spread';
+type SpreadImage={src:string;label?:string;fit?:'contain'|'cover'};
+
+/** Multi-image evidence: each image reveals separately; groups must use different variants in one timeline. */
+export const ImageSpread:React.FC<{
+  images:SpreadImage[];
+  rect?:SafeRect;
+  variant?:SpreadVariant;
+  reveals?:number[];
+  edgeGlow?:boolean;
+} & TimedProps>=({images,rect={left:1010,top:160,width:830,height:700},variant='stack-spread',reveals=[],edgeGlow=false,startFrame,endFrame})=>{
+  const frame=useCurrentFrame();
+  if(frame<startFrame||frame>=endFrame||images.length===0)return null;
+  const count=images.length;
+  const cardW=Math.min(360,Math.max(220,(rect.width-(count-1)*20)/Math.min(count,3)));
+  const cardH=Math.min(470,rect.height-40);
+  const centerX=(rect.width-cardW)/2;
+  const centerY=(rect.height-cardH)/2;
+  const target=(index:number)=>{
+    if(variant==='grid-reveal'){
+      const cols=Math.min(2,count), rows=Math.ceil(count/cols);
+      const gap=18;
+      const w=(rect.width-gap*(cols-1))/cols;
+      const h=(rect.height-gap*(rows-1))/rows;
+      return {left:(index%cols)*(w+gap),top:Math.floor(index/cols)*(h+gap),width:w,height:h,rotate:0};
+    }
+    if(variant==='fan-spread'){
+      const gap=18;
+      const total=Math.min(count,3)*cardW+Math.max(0,Math.min(count,3)-1)*gap;
+      const left=(rect.width-total)/2+(index%3)*(cardW+gap);
+      return {left,top:centerY+(index%2?18:-18),width:cardW,height:cardH,rotate:(index-(count-1)/2)*4};
+    }
+    if(variant==='orbit-spread'){
+      const angle=(-24+(index/Math.max(1,count-1))*48)*Math.PI/180;
+      const radius=Math.min(210,rect.width*.22);
+      return {left:centerX+Math.sin(angle)*radius,top:centerY+Math.cos(angle)*20,width:cardW,height:cardH,rotate:angle*180/Math.PI};
+    }
+    const gap=18;
+    const total=Math.min(count,3)*cardW+Math.max(0,Math.min(count,3)-1)*gap;
+    return {left:(rect.width-total)/2+(index%3)*(cardW+gap),top:centerY+(index>=3?34:0),width:cardW,height:cardH,rotate:index%2?2:-2};
+  };
+  return <div style={{position:'absolute',...rect,zIndex:96,overflow:'visible'}}>
+    {images.map((image,index)=>{
+      const reveal=reveals[index]??startFrame+index*10;
+      if(frame<reveal)return null;
+      const progress=interpolate(frame,[reveal,reveal+18],[0,1],clamp);
+      const out=interpolate(endFrame-frame,[0,12],[0,1],clamp);
+      const t=target(index);
+      const isStack=variant==='stack-spread';
+      const fromLeft=centerX;
+      const fromTop=centerY;
+      const left=isStack?fromLeft+(t.left-fromLeft)*progress:t.left;
+      const top=isStack?fromTop+(t.top-fromTop)*progress:t.top;
+      const rotate=isStack?(index%2?3:-3)+(t.rotate-(index%2?3:-3))*progress:t.rotate;
+      const scale=(isStack?(.9+.1*progress):(.96+.04*progress));
+      const labelMotion=enterExit(frame,reveal+10,endFrame);
+      return <div key={`${image.src}-${index}`} style={{position:'absolute',left,top,width:t.width,height:t.height,opacity:Math.min(progress,out),transform:`rotate(${rotate}deg) scale(${scale})`,transformOrigin:'center center',background:'#0b0d0e',border:'1px solid rgba(247,248,250,.72)',boxShadow:edgeGlow?`0 20px 56px rgba(0,0,0,.62),${WHITE_GLOW}`:'0 20px 56px rgba(0,0,0,.62)',overflow:'hidden'}}>
+        <Img src={image.src} style={{width:'100%',height:'100%',objectFit:image.fit??'contain',display:'block'}}/>
+        {image.label&&<div style={{position:'absolute',left:12,bottom:12,padding:'6px 9px',background:'rgba(17,19,21,.9)',color:WHITE,fontSize:14,fontWeight:900,...labelMotion}}>{image.label}</div>}
+      </div>;
+    })}
+  </div>;
+};
+
+type TrackPoint={frame:number;x:number;y:number;zoom?:number};
+const sampleTrack=(frame:number,points:TrackPoint[])=>{
+  if(!points.length)return {x:.5,y:.5,zoom:1};
+  if(frame<=points[0].frame)return {x:points[0].x,y:points[0].y,zoom:points[0].zoom??1};
+  const last=points[points.length-1];
+  if(frame>=last.frame)return {x:last.x,y:last.y,zoom:last.zoom??1};
+  for(let i=0;i<points.length-1;i++){
+    const a=points[i],b=points[i+1];
+    if(frame>=a.frame&&frame<=b.frame){
+      const p=interpolate(frame,[a.frame,b.frame],[0,1],clamp);
+      return {x:a.x+(b.x-a.x)*p,y:a.y+(b.y-a.y)*p,zoom:(a.zoom??1)+((b.zoom??1)-(a.zoom??1))*p};
+    }
+  }
+  return {x:.5,y:.5,zoom:1};
+};
+
+/** Operation-only evidence panel with intentional focus zoom and a non-blocking cursor marker. */
+export const OperationDemoPanel:React.FC<{
+  src:string;
+  rect?:SafeRect;
+  sourceStartFrame?:number;
+  trackPoints?:TrackPoint[];
+  showCursor?:boolean;
+  showFocusRing?:boolean;
+  fit?:'contain'|'cover';
+  edgeGlow?:boolean;
+  label?:string;
+} & TimedProps>=({src,rect={left:1030,top:130,width:820,height:760},sourceStartFrame=0,trackPoints=[],showCursor=true,showFocusRing=true,fit='contain',edgeGlow=true,label,startFrame,endFrame})=>{
+  const frame=useCurrentFrame();
+  if(frame<startFrame||frame>=endFrame)return null;
+  const enter=interpolate(frame,[startFrame,startFrame+16],[0,1],clamp);
+  const exit=interpolate(endFrame-frame,[0,12],[0,1],clamp);
+  const track=sampleTrack(frame,trackPoints);
+  const tx=(.5-track.x)*(track.zoom-1)*100;
+  const ty=(.5-track.y)*(track.zoom-1)*100;
+  const focusOpacity=track.zoom>1.02?interpolate(track.zoom,[1.02,1.1],[0,.9],clamp):0;
+  return <div style={{position:'absolute',...rect,zIndex:97,overflow:'hidden',opacity:Math.min(enter,exit),transform:`translateY(${(1-enter)*24+(1-exit)*8}px) scale(${.985+.015*enter})`,background:'#0b0d0e',border:'1px solid rgba(247,248,250,.76)',boxShadow:edgeGlow?`0 24px 70px rgba(0,0,0,.62),${WHITE_GLOW}`:'0 24px 70px rgba(0,0,0,.62)'}}>
+    <Video src={src} muted startFrom={sourceStartFrame} style={{width:'100%',height:'100%',objectFit:fit,display:'block',transformOrigin:'center center',transform:`translate(${tx}%,${ty}%) scale(${track.zoom})`}}/>
+    {showFocusRing&&focusOpacity>0&&<div style={{position:'absolute',left:`${track.x*100}%`,top:`${track.y*100}%`,width:86,height:86,marginLeft:-43,marginTop:-43,border:'2px solid rgba(247,248,250,.9)',borderRadius:'50%',boxShadow:WHITE_GLOW,opacity:focusOpacity,pointerEvents:'none'}}/>}
+    {showCursor&&<div style={{position:'absolute',left:`${track.x*100}%`,top:`${track.y*100}%`,width:18,height:18,marginLeft:-9,marginTop:-9,border:'2px solid #111315',background:WHITE,borderRadius:'50%',boxShadow:'0 0 0 5px rgba(247,248,250,.25)',opacity:.92,pointerEvents:'none'}}/>}
+    {label&&<div style={{position:'absolute',left:16,top:16,padding:'7px 11px',background:'rgba(17,19,21,.88)',color:WHITE,fontSize:15,fontWeight:900,letterSpacing:'.06em'}}>{label}</div>}
+  </div>;
+};
+
+## 2026-08-22 最新用户确认纠偏（最高优先级，覆盖本文件更早的冲突示例）
+
+本项目的唯一包装基准是 `C:\Users\11066\Documents\ChatGPT\新剪辑测试\report-style-preview\out\preview-61s-v6-parallel-backdrop.mp4` 及其后续用户确认截图；不得回退到旧撕纸 Skill，也不得把“统一亮白”误读为所有组件纯黑白。
+
+- 信息卡、短标题、字幕使用参考图 5/6/7 的彩色科技编辑体系：深色底、主体白字、红/橙黄/蓝色作为语义强调色；卡片小而克制，不能遮挡脸、嘴、手或字幕。
+- 字幕使用同一彩色参考排版：底部居中、短行、深色半透明底板，按 SRT cue 精确入场/出场；组件不得剧透后文。
+- 灰黑背景板上的白色艺术字才允许有克制的白色光泽；本期主题文案固定为“死也得死在AI上”。信息卡和字幕不加厚重白光。
+- 单张截图默认放人物右侧，使用 contain 保留完整可读内容；横向截图禁止塞入竖向卡片、禁止过度裁切和无意义放大。
+- 多张图片必须分层入场，先叠放再向人物两侧铺开；不同组不能重复同一种入场动效；入场完成后静止，不持续抖动、呼吸缩放或漂移。
+- 真实录屏/视频若语义要求展示，必须按素材原始时长完整播放；操作演示才可做一次目的明确的放大、鼠标和聚焦追踪。非操作素材稳定展示。
+- 证据素材占据画面时与普通信息组件互斥；若需要阅读，采用 cover 去黑边的大画面或独占式展示；播放期间关闭不必要的人物圆窗，避免与素材重叠。
+- 人物主轨从第 0 帧连续播放；左下圆窗（若场景需要）必须使用同一主口播轨的全局时间轴、静音、OffthreadVideo，不得重新从 0 播放或循环导致嘴型错位/卡顿。
+- 禁止挡脸长线、箭头、强 glitch、单帧白闪和卡帧；组件和 MG 均需有合理分层入场、停留、出场。
+

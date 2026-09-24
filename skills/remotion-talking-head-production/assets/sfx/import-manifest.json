@@ -1,0 +1,96 @@
+{
+  "importedOn": "2026-08-27",
+  "source": "C:\\Users\\11066\\Downloads",
+  "byteHandling": "source MP3 files copied directly; page-turn source is an MP4 container whose audio stream was extracted to MP3; originals preserved",
+  "reconstructedAudioRemoved": true,
+  "mappings": [
+    {
+      "id": "spaceKey",
+      "source": "空格敲击音效.MP3",
+      "target": "space-key.mp3",
+      "sha256": "4981b930fd48deda80976c756d738a26307dfe6f5081c1ed9e9bdf45e4f05dc6"
+    },
+    {
+      "id": "woosh",
+      "source": "woosh.MP3",
+      "target": "woosh.mp3",
+      "sha256": "0bca1d9b8a8b7e4e72bb3bd6086e03ddb072ea5e63883341ae4e55cb026ea26d"
+    },
+    {
+      "id": "swish",
+      "source": "swish音效.MP3",
+      "target": "swish.mp3",
+      "sha256": "5315d81fa8414de1450a8dccb799317c4b155f030ea38a596b91a5e4c4aa9810"
+    },
+    {
+      "id": "cashRegister",
+      "source": "叮，收银机提示音效.MP3",
+      "target": "cash-register-ding.mp3",
+      "sha256": "bf978749faaf77170e58bdceb194e398fb4cbcc8ae21660df1d561fccb25b26d"
+    },
+    {
+      "id": "xiu",
+      "source": "咻一下音效.MP3",
+      "target": "xiu.mp3",
+      "sha256": "98c1225e637a71dee3ac95510d39d1f12fc998ef4a5697bd7abbbf64fe1f2490"
+    },
+    {
+      "id": "success",
+      "source": "正确提示音效.MP3",
+      "target": "success.mp3",
+      "sha256": "77a29e9e89dfeca706dad543faf18d77dd305c14d1742511e631d03046eb4015"
+    },
+    {
+      "id": "error",
+      "source": "错误提示音效.MP3",
+      "target": "error.mp3",
+      "sha256": "2abe55d3a486e9c8b5bb1f15dcae5ac2f1ba408a72df7423a59c28b8cfc74da2"
+    },
+    {
+      "id": "mouseClick",
+      "source": "鼠标点击音效.MP3",
+      "target": "mouse-click.mp3",
+      "sha256": "f06ddda0337e86a7dbb4a2d81b02f4fc1a07078a019f551aea673ff99e5da02d"
+    },
+    {
+      "id": "keyboardTyping",
+      "source": "键盘打字音效.MP3",
+      "target": "keyboard-typing.mp3",
+      "sha256": "503e69e206738d639d6e6b88644a633dee50e023614421ddd44c5b6204441ee9"
+    },
+    {
+      "id": "notification",
+      "source": "滴，提示音效.MP3",
+      "target": "notification-ding.mp3",
+      "sha256": "06277b938daa4666a4ef4eba642e8daa4598eaa33ac34b04ff905a99ee2729a6"
+    },
+    {
+      "id": "sua",
+      "source": "唰 音效.MP3",
+      "target": "sua.mp3",
+      "sha256": "e5080486e69c967fe528a96a3f39901c04646f929e83466b5774053ccacaf3cf"
+    },
+    {
+      "id": "boodong",
+      "source": "嘟咚音效.MP3",
+      "target": "boodong.mp3",
+      "sha256": "73d92cd8a469048610e441843a35ca7231a5b72170be211616d79cf5a6f46ac9"
+    },
+    {
+      "id": "numberChange",
+      "source": "数值变化音频.mp3",
+      "target": "number-change.mp3",
+      "sha256": "B715847CECD87C9431EE0AF9BDA4667B9D3564C4454BBE04C43C832CE0EFF604",
+      "use": "数字滚动、收入/账号/视频数量等增长动画的同步音效"
+    },
+    {
+      "id": "pageTurn",
+      "source": "翻页声音效.mp4",
+      "target": "page-turn.mp3",
+      "sha256": "19CA648224706FFC68F3DAC74F41A37060344D05A8B120E01EEC49780143BA30",
+      "use": "PPT、新闻截图和网页证据的翻页或页面切换",
+      "sourceStream": "audio stream extracted from MP4; original preserved"
+    }
+  ],
+  "updatedOn": "2026-09-14"
+}

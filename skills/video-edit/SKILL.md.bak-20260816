@@ -1,0 +1,273 @@
+---
+name: video-edit
+description: Remotion-based talking-head video editing workflow for AI self-media videos. Use when Codex needs to cut or rebuild a 16:9 or 9:16 talking-head video with dynamic overlays, b-roll, captions, source cards, safe-area layout, keyword-timed animations, local editable Remotion Studio, final 1080p+ render, or fixes for overlapping/off-screen video materials.
+---
+
+# Video Edit
+
+## Workflow
+
+Use the Remotion skill first for Remotion-specific rules. If captions, ffmpeg, images, or timing are involved, read the relevant Remotion rule files before editing.
+
+1. Gather inputs: raw video, transcript with timecodes, reference screenshots/videos, platform ratio, output directory, and any forbidden text or icons.
+2. Before timing any overlay, extract or obtain a timestamped transcript from the actual source video. Treat script/docx copy as planning context only unless it is already a verified, timestamped transcript of the exact video.
+3. Inspect existing project structure before editing. Prefer the current Remotion project's patterns, components, assets, and naming.
+4. Build a cue map from the timestamped transcript before touching visuals. Include exact times for money numbers, product names, lesson headings, examples, proof points, and CTA.
+5. Build or update overlays from the cue map. Time each visual to the spoken keyword, not to the section title or written script alone.
+6. Use a safe layout system before adding visual richness. Keep the speaker visually dominant and reserve side columns for materials.
+7. Render still frames at risky timestamps before full export. Check the actual rendered mp4 after export.
+8. Start Remotion Studio when the user asks for a local editable version and provide the local URL.
+9. Copy the final mp4 into the dated product folder: `<用户主目录>/AI自媒体/成品/YYYYMMDD`, using local current date format such as `20260623`. Create the folder if it does not exist. On macOS `<用户主目录>` is normally `/Users/<用户名>`; on Windows it is normally `C:\\Users\\<用户名>`. If that AI self-media folder does not exist, ask the user for the final output folder rather than assuming a different location.
+
+## Transcript-First Cue Map
+
+For talking-head edits, always create or infer a cue map from the actual audio before layout work:
+
+- Extract the real video transcript with timestamps whenever the raw video exists. Do not rely on a docx/script as the timing source.
+- Convert transcript events into a cue map such as: `2.04 月入10万美金`, `30.88 ShipFast`, `32.69 CodeFast`, `33.88 LogoFast`, `45.18 去年进账100万美金`.
+- Use the cue map for every overlay start time. If a product, number, card row, chart, screenshot, or proof point is not yet spoken, it should not be visible.
+- Treat each row inside a visual as its own timed asset. A section card or HUD can enter early, but its internal claims must reveal one by one at their spoken cues.
+- When the transcript differs from the written script, the transcript wins. Remove or rewrite visuals for ideas that are not actually spoken.
+- For revenue or money claims, record both value and unit in the cue map: monthly, annual, one-time payment, MRR, ARR, or total revenue. Never swap units.
+
+## Layout Rules
+
+For 16:9 talking-head videos with the speaker centered, prefer the proven layout from this project:
+
+- Use one left-side main slot at a time for the current idea.
+- Use right-side support slots for b-roll/source cards, normally no more than two vertical bands.
+- Keep materials fully inside the 1920x1080 canvas. Do not let large numbers, cards, images, badges, or subtitles run off-screen.
+- Avoid overlap by construction. If two elements would share a band, sequence them instead of stacking them.
+- Do not put important overlays over the speaker's face or the subtitle band.
+- Let prior materials remain only when they are still readable and occupy separate slots.
+- When a new material would cover old text, either move it to an empty slot or fade the old material out first.
+- Design the left side as the main information layer and the right side as proof/source support. Avoid making both sides equally dense at the same time.
+- Keep the subtitle band clear. If the source video already has subtitles, treat the lower center as unavailable for overlays.
+- Avoid top-left duplication: do not show both a persistent lesson badge and a large HUD title with the same number/section label.
+
+## Visual Style Rules
+
+For polished AI self-media edits, avoid making every material a glass card with rows inside. Use a more premium HUD/information-layer style by default:
+
+- Prefer left-side layered information: large Chinese title, small uppercase English/Chinese kicker, neon underline, short subline, and timed supporting elements.
+- Use cards sparingly. Reserve framed cards for real screenshots, source materials, CTA blocks, or compact proof modules; do not wrap every idea in a big rounded rectangle.
+- Replace list-card layouts with mixed visual forms: big typography, icon docks, signal rows with only left rules/underlines, data strips, mini panels, timelines, flow nodes, equations, and lightweight terminal/source frames.
+- Keep existing good animations such as count-ups, pop-ins, staggered row reveals, and subtle screenshot drift, but apply them to the HUD elements rather than forcing everything into a card.
+- The left side can carry more information than before, but it must still breathe: use strong hierarchy, short labels, and negative space instead of dense paragraphs.
+- Match the reference aesthetic when asked for a more advanced look: tech/HUD, neon cyan/green/amber accents, bold white Chinese headlines, small bilingual metadata, and thin glowing lines.
+
+### Preferred HUD Pattern
+
+Use this visual hierarchy for most concept sections:
+
+1. Small metadata line: uppercase English plus optional Chinese, e.g. `MOVE 01 · DISTRIBUTION`, `PORTFOLIO LINE`, `PUBLIC TRUST`.
+2. Thin neon vertical tick and underline.
+3. Large bold Chinese headline, usually 2 lines, with one important word in accent color.
+4. One short subline only if it adds meaning.
+5. Supporting elements below: icon dock, signal rows, mini panels, timeline, equation, or data strips.
+
+Good reusable component ideas:
+
+- `HoloTitle`: kicker + neon underline + large Chinese title + optional subline.
+- `SignalRows`: staggered rows with only a left rule, underline, translucent gradient, and short labels. This replaces bulky list cards.
+- `IconDock`: 2-5 circular neon icons for roles, products, skills, or actions.
+- `MiniPanel`: small proof or formula module, not a giant card.
+- `SourceShot`: real product/source screenshot in a lightweight frame with subtle drift; use for proof, not decoration.
+- `ProductPills` / data strip: compact revenue or product metrics using thin rules and colored text, not a big boxed table.
+
+Avoid this default look unless specifically requested:
+
+- One large rounded rectangle containing every line of information.
+- Multiple glass cards stacked vertically on the same side.
+- A card that appears and immediately reveals all rows, chips, claims, or examples.
+- Decorative UI that explains nothing or feels like generic sci-fi filler.
+
+### Section Treatment Examples
+
+When editing business/AI case-study videos, use these patterns:
+
+- Hook metric: large count-up number only after the spoken money cue; label must include the spoken unit such as `月入十万美金` or `去年进账一百万美金`.
+- Origin story: `HoloTitle` with place/time + `SignalRows` for dated milestones such as basement, first email, first payment, proof moment.
+- Product matrix: big title like `产品矩阵`; reveal product rows only when each product name is spoken; show product screenshots on the right when each product is named.
+- Funnel/ecosystem: do not show the whole funnel at once. Reveal each node or row when the speaker says free entry, paid product, ecosystem, or portfolio hedge.
+- Lessons/moves: use one big HUD title per lesson and reveal supporting signals one by one. Do not also add a separate lesson badge if the HUD title already carries the lesson number.
+- Skill stacking: use bars, columns, icons, or equation-style visuals rather than a text list.
+- Failure/trust section: use warning/trust color language and a timeline or signal rows; avoid sensational visuals that are not supported by the speech.
+
+## Timing Rules
+
+Make overlays match the spoken words:
+
+- The actual video transcript timecodes are the source of truth. Do not time materials from a Word/script file when the video audio exists.
+- If a section says "感悟 1 是 A, B, C", reveal A when A is spoken, B when B is spoken, and C when C is spoken.
+- For cards with multiple rows, chips, bullets, numbers, or examples, reveal each internal item at its own spoken cue. Do not show all rows at card entry.
+- Do not reveal future products, claims, examples, or outcomes before the speaker says them. Product/source screenshots should appear when the product is named or the source claim is spoken.
+- Match money metrics exactly to the spoken unit and timing. For example, do not swap monthly revenue and annual revenue; if the audio says "月入十万", show monthly $100K, and if it says "年入百万/去年进账100万", show annual $1M.
+- Use the transcript timecodes as the source of truth, then verify by previewing frames.
+- Keep material changes frequent enough to feel alive, but never so fast that text cannot be read.
+- For list reveals, stagger chips or rows by the actual phrase timing.
+- If an overlay container enters before all its internal details are spoken, hide future details rather than showing them dimly with readable text.
+- Source screenshots should appear no earlier than the named product/source cue and should disappear or give way before the next screenshot in the same slot.
+- When a spoken section has 5-6 internal claims, prefer a single HUD title plus row-by-row reveal. Do not compress them into a dense paragraph.
+
+## Material Rules
+
+Use rich but relevant materials:
+
+- Prefer real product screenshots, article/source screenshots, app UI, charts, b-roll photos, and simple data visualizations that match the current spoken point.
+- Use web search or generated images only when they improve relevance. Avoid images that look obviously AI-generated.
+- Do not add unnecessary labels if the icon/card already explains itself.
+- Remove user-forbidden elements such as handles, follow badges, or misspelled names.
+- Keep Chinese names exact. In this project, use "子昂", not "紫昂".
+- For product intro sections, make sure every named product has matching material when possible. If the audio names ShipFast, CodeFast, and LogoFast, include LogoFast too.
+- Do not show unrelated proof materials just because they exist in the folder. A screenshot must support the current spoken point.
+- If web-sourced or local product material is missing, search for or create a relevant support asset before settling for a generic placeholder.
+
+## Verification
+
+Read [references/qa-checklist.md](references/qa-checklist.md) before final export or after fixing layout complaints.
+
+Minimum checks:
+
+- Confirm that a timestamped transcript from the actual video exists and that overlay cue times came from it.
+- Confirm there is a cue map for all money metrics, product names, section headings, and proof screenshots.
+- Check for visual spoilers: no card row, product screenshot, money number, or conclusion appears before its spoken cue.
+- Check metric-unit matching, especially monthly vs annual numbers.
+- Check product-material coverage: all named products in a product-intro sequence have a corresponding screenshot or deliberate visual treatment.
+- Check visual sophistication: the edit should not be dominated by repeated rounded glass cards with text rows. Use HUD titles, icons, signal rows, data strips, or lightweight frames.
+- Check duplicate section labels: do not stack old lesson badges on top of new HUD headings.
+- Run TypeScript/lint if available.
+- Run a static overlap/time-slot check if the project has one, or create a small script for risky timelines.
+- Render still frames at every risky timestamp: opening hook, large money numbers, dense list reveals, lesson badges, b-roll cards, closing CTA.
+- Create a contact sheet of rendered stills from the risky timestamps and visually inspect it before asking the user to review.
+- Extract frames from the final mp4 after render. Do not rely only on Remotion stills.
+- Confirm final video is at least 1080p.
+
+## HUD Redesign Completion Standard
+
+When a video has been upgraded from card-list visuals to the premium HUD/information-layer style, the completion state should include all of the following:
+
+- The visual presentation is no longer dominated by "glass card + text rows." It uses large HUD titles, English kicker metadata, glowing thin lines, icon docks, signal rows, data strips, lightweight screenshot frames, timelines, or flow nodes.
+- The previously fixed transcript timing remains intact. The HUD redesign must not break the rule that visuals appear only when the corresponding words are spoken.
+- The local Remotion Studio preview is the primary review artifact. Provide the Studio URL and ask the user to inspect it before final export.
+- The `video-edit` skill should be updated with any new durable visual/timing rule discovered during the redesign, so the user does not need to repeat the same correction next time.
+- Generate key stills or a contact sheet after the HUD redesign and inspect it for hierarchy, overlap, subtitle clearance, and whether the left side feels information-rich but not cramped.
+- In the handoff message, explicitly summarize the new visual language, for example: "changed from glass card lists to HUD information layers with large titles, English kickers, glowing lines, icon docks, signal rows, data strips, and lightweight source frames."
+
+## Preview-First Rule
+
+When the user reports timing, spoiler, or overlap problems, or asks to inspect locally, stop at a local editable Remotion Studio preview. Do not render or copy a final mp4 until the user confirms the preview.
+
+If a render is accidentally created inside the working project, do not copy it to the final product folder or present it as final. Keep the Remotion Studio URL as the review artifact until the user confirms.
+
+## Marc Lou Case Study Lessons From 2026-06-27
+
+These are reusable editing lessons from the Marc Lou product-matrix edit:
+
+- The first serious pass failed because visuals were timed from the script instead of the actual audio. The fix was to transcribe the raw video and build a timestamp cue map first.
+- The opening cue said monthly $100K, while the middle cue said annual/last-year $1M. The fix was to bind metric value, unit, and time together instead of treating money numbers as interchangeable.
+- Product materials must match the spoken list. ShipFast and CodeFast were present, but LogoFast was missing from the product intro; the fix was to add LogoFast material exactly when LogoFast was spoken.
+- Card rows are also timed materials. Product rows, lesson rows, and proof rows should pop at their own spoken phrases, not all at card entry.
+- Overlap must be prevented by slot sequencing, not by hoping the layout looks okay. Maintain a simple overlap-check script or equivalent table for left/right slots.
+- The more premium version used HUD composition: `HoloTitle`, `SignalRows`, `IconDock`, `MiniPanel`, data strips, and lightweight source frames. This should be the default direction for AI/business case-study edits.
+- Reference aesthetic: bold white Chinese headline, neon cyan/green/amber accent, thin glowing lines, small uppercase English metadata, sparse but information-rich left side, real source proof on the right.
+- Keep existing animation strengths: count-up metrics, pop-in icons, row-by-row reveal, subtle screenshot drift, and fade-out holds.
+- Final review should be a local Remotion Studio preview plus key still/contact-sheet inspection. Export final mp4 only after user approval.
+
+## Delivery Path
+
+Default to the user's AI self-media product folder:
+
+```text
+<用户主目录>/AI自媒体/成品/YYYYMMDD
+```
+
+Use an 8-digit local date with no separators. For example, on 2026-06-23, put outputs under:
+
+```text
+<用户主目录>/AI自媒体/成品/20260623
+```
+
+Keep generated working files in the Remotion project as needed, but the user-facing final mp4 must be copied into the dated product folder.
+## Project Addendum: 口播动态包装、人物小窗与素材连续性
+
+本节是对上述原始工作流的增量补充：保留原有 Remotion 的转录优先、时序、布局、安全区、HUD 与交付规则；以下规则用于口播型短视频的动态人物缩放、素材穿插、MG 动画与转场。
+
+### 先拆内容，再做动态画面
+
+- 在制作前完成真实 ASR 和 cue map。按自然语义拆成连续 beat，而不是只按字幕换行切画面。
+- 每个 beat 都要有一个可解释的视觉变化：对象生成、拆分、连接、传递、移动、聚合、数值增长、状态切换、镜头推进或关系高亮。
+- 字幕负责呈现“说了什么”；信息卡、标题、流程、图表负责解释“这段真正想说明什么”。不要把信息卡当作整段字幕的重复。
+- 前一个 beat 的关键对象优先交接到下一个 beat。不要提前展示完整结论后等待旁白；除刻意的重点停留外，不得连续超过 1 秒没有信息变化。
+- 动画先完成可读的静态终帧，再制作进入、保持、离开。最后一个关键动作必须在口播结束前完成，并保留可读终帧和完整 CTA。
+- 左、右信息焦点需交替；不要把所有特效、贴片或卡片长期堆在画面右侧。
+
+### 动态人物缩放小窗
+
+- 人物从全屏缩为小窗时，必须仍使用同一段连续播放的原口播视频和原口播音频；禁止用静态截图冒充人物小窗。
+- 默认让录屏、案例图、成片和对比视频成为主画面；人物小窗仅作为持续讲解的陪衬。根据主素材关键区在左下、右下或侧边切换，不要长期固定在单一位置。
+- 小窗使用细边界、留白和轻阴影即可，不使用厚重大框、发光描边、超屏框或廉价 AI HUD。人物脸、字幕安全区、录屏操作区和案例关键内容不得互相遮挡。
+- 全屏→小窗采用稳定的缩放与位移，建议 0.35–0.55 秒；小窗→全屏应服务于下一观点或结论。避免高频抖动、过度弹簧和每句话都缩放。
+- 人物移动前先检查字幕安全区；人物框缩小后，人物视频本身必须继续随时间播放，而不是只移动外框。
+
+### 入场、出场与丝滑转场
+
+- 切点优先对齐重音、停顿、关键词、句号或素材中可见动作。普通观点切换可直接切；有关系的内容优先采用共享对象衔接。
+- 推荐将标题线延展成流程线、数字变成数据卡、录屏缩为证据条、输入素材汇入模型节点等方式作为语义交接，而不是无意义的旋转、翻页或扫光。
+- 常用时长：直接切 0–0.18 秒；证据轻滑入/模糊转清晰 0.20–0.40 秒；人物让位给素材或流程推进 0.25–0.55 秒；素材结束回人物 0.10–0.35 秒。
+- 出场必须为下一画面让位。不能先清空旧画面再等待新画面，也不能出现黑场、白场、底色空白、空框或素材结束后的长时间定格。
+- 同一种转场连续使用不超过 2–3 次；放大素材时应使用稳定缩放和裁切，不制造明显抖动。
+
+### MG 动画的使用边界
+
+- MG 动画只用于解释关系、流程、对比、数据或状态变化，不能只是装饰性粒子、无意义扫描线或反复出现的方框。
+- 流程类：节点按口播逐个出现、连接、传递，形成清晰的输入→处理→输出。
+- 对比类：A/B 真实视频等高同步播放，用简洁版本标签、中线和 1–3 个比较维度说明差异。需要听原片时，明确口播淡出、原声区间和淡回口播。
+- 数据类：数字和单位同时出现；条形图、折线、计数器和状态点跟随口播推进。来源使用小型来源条或真实截图，不做夸张新闻墙。
+- 结论类：前文元素聚合为一句核心结论或 CTA，再回到人物全屏。避免所有元素都塞进同样的圆角大卡片。
+
+### 真实素材、音频与实现约束
+
+- 录屏、案例、成片和 B-roll 必须使用真实视频连续播放，不能以首帧、封面或静态抽帧替代。素材播放区间结束时立即回切人物或衔接下一素材。
+- 如需播放案例原声，标注口播降低音量的起止、素材原声区间和恢复点；音效必须低于人声，且不应每个元素都发声。
+- 声音语义：出现用 click/pop，移动用 whoosh，流程连接用 tick，数据增长用 riser/count，结论完成用 confirm。避免嘈杂、重复和盖住口播。
+- 若项目采用 HyperFrames 而非 Remotion：使用 HTML/CSS/GSAP；元素与口播共用 `data-start`、`data-duration`、`data-track-index`；场景 timeline 使用 `{ paused: true }` 并注册到 `window.__timelines`；视频用 `<video>` 及正确的 `data-media-start` 保持连续播放；禁用 `Math.random()`、`Date.now()`、无限循环和不可复现的物理模拟。
+
+### Preview-First 补充验收
+
+在完整渲染前，除原有 Preview-First 检查外，至少预览：开场、全屏→人物小窗、录屏/案例进入、视频素材播放中、素材结束回切、左右对比、CTA 和最后两秒。
+
+- 以 0.5–1 秒间隔抽帧确认真实视频仍在播放，而不是静帧。
+- 检查字幕不挡脸，小窗不压住录屏关键操作区，人物框与字幕之间有稳定安全距离。
+- 检查所有框均在画布内；删除无解释价值、超屏、挡脸或重复的大方框。
+- 确认原口播的结尾和评论/CTA 没有被意外裁切。
+- 详细表格可使用 `references/cue-map-template.md`；人物、素材和 MG 的具体语言可使用 `references/talking-head-motion-language.md`；最终验收使用 `references/qa-checklist.md`。
+
+## 增量规则：以原 Skill 为主的低干扰口播实现
+
+本段是对原有 video-edit 规范的增量，不替换或削弱前文。默认仍采用原 Skill 的主视觉、字幕与信息包装，只在真实口播素材同步、人物占比和 MG 克制上补充以下约束：
+
+### 1. 人物优先与开合结构
+- 开头与结尾各至少 2–3 秒使用人物原始口播全屏画面；不要在第一帧直接堆海报、标题或信息卡。
+- 中段也优先保留人物全屏口播，只有在观点需要证据、案例或流程解释时才切入素材；素材结束后必须立刻回到人物，不留黑场或空白。
+- 人物全屏、人物窗口、素材窗口都必须来自同一个原始视频时间轴。人物窗口不是截图，必须连续播放同一段对应的画面和嘴型。
+
+### 2. 口播同步与字幕
+- 口播音频只保留一条主轨；所有人物窗口静音，且按全局 source frame 对齐，禁止重复播放或错位播放声音。
+- SRT/真实语音识别时间码是字幕与画面切点的唯一依据。字幕文本必须完整保留，不能擅自删掉结尾互动语。
+- 字幕固定在安全区，不压脸、不遮素材关键主体；人物窗口出现时，窗口与字幕安全区分离。
+
+### 3. 素材槽位与层级
+- 一个时间段只允许一个主素材槽位。海报、录屏、案例图、视频片段不得同时叠在同一位置。
+- 图片默认完整显示，优先 `contain`，必要时在画布内留白；禁止为了填满画面而裁掉文字或主体。
+- 真实视频素材必须使用连续播放区间，不得只显示首帧。播放结束后做平滑淡出或回人物切换。
+
+### 4. MG、转场与科技感
+- MG 只解释“关系、流程、变化”，每个信息段最多 1–2 个主动作；删除装饰性大框、堆卡、重复边框和无意义粒子。
+- 优先使用细线、短标签、遮罩推入、轻微缩放、局部高亮、数字递进和状态切换；转场时长 8–16 帧，保持丝滑，不做廉价 HUD。
+- 科技感来自克制的冷色高光、真实 UI/录屏、细网格、轻微光扫和可信的提示音，不来自霓虹粒子或大面积发光。
+- 每个动效元素在进入前先完成静态终帧；所有动画必须可复现，不使用 `Math.random()`、`Date.now()`、无限循环或不可控物理模拟。
+
+### 5. 渲染前验收
+- 必须抽查 0 秒、开头转场、每个素材入/出点、人物窗口出现点、字幕长句和结尾 CTA。
+- 验收重点：海报完整、人物嘴型与字幕同步、素材不重叠、素材连续播放、字幕不压脸、开头和结尾人物全屏、MG 数量克制。

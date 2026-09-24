@@ -1,0 +1,92 @@
+export type SfxId =
+  | 'spaceKey'
+  | 'woosh'
+  | 'swish'
+  | 'cashRegister'
+  | 'xiu'
+  | 'success'
+  | 'error'
+  | 'mouseClick'
+  | 'keyboardTyping'
+  | 'notification'
+  | 'sua'
+  | 'boodong'
+  | 'numberChange'
+  | 'pageTurn';
+
+export type SfxDefinition = {
+  id: SfxId;
+  label: string;
+  path: string;
+  use: string;
+  defaultVolume: number;
+};
+
+export const SFX_LIBRARY: Record<SfxId, SfxDefinition> = {
+  spaceKey: {id: 'spaceKey', label: 'Space key', path: 'sfx/library/space-key.mp3', use: '操作演示中的空格键或播放控制动作', defaultVolume: 0.07},
+  woosh: {id: 'woosh', label: 'Woosh', path: 'sfx/library/woosh.mp3', use: '大段转场、章节切换和对比段切换', defaultVolume: 0.11},
+  swish: {id: 'swish', label: 'Swish', path: 'sfx/library/swish.mp3', use: '组件、章节标题和结论卡的短促进入或切换', defaultVolume: 0.12},
+  cashRegister: {id: 'cashRegister', label: 'Cash register ding', path: 'sfx/library/cash-register-ding.mp3', use: '收益、金额、免费额度和奖励数字出现', defaultVolume: 0.10},
+  xiu: {id: 'xiu', label: 'Xiu', path: 'sfx/library/xiu.mp3', use: '快速飞入、箭头划过和轻快元素切换', defaultVolume: 0.09},
+  success: {id: 'success', label: 'Success', path: 'sfx/library/success.mp3', use: '正确、完成、通过和正向结果确认', defaultVolume: 0.08},
+  error: {id: 'error', label: 'Error', path: 'sfx/library/error.mp3', use: '放弃、成本压力、错误和负向结果', defaultVolume: 0.08},
+  mouseClick: {id: 'mouseClick', label: 'Mouse click', path: 'sfx/library/mouse-click.mp3', use: '鼠标点击、按钮触发和重点节点确认', defaultVolume: 0.07},
+  keyboardTyping: {id: 'keyboardTyping', label: 'Keyboard typing', path: 'sfx/library/keyboard-typing.mp3', use: '输入提示词、工作流或 Skill 文本', defaultVolume: 0.06},
+  notification: {id: 'notification', label: 'Notification ding', path: 'sfx/library/notification-ding.mp3', use: '通知到达、消息提醒和普通提示节点', defaultVolume: 0.08},
+  sua: {id: 'sua', label: 'Sua', path: 'sfx/library/sua.mp3', use: '素材页、录屏或证据画面的快速切入', defaultVolume: 0.10},
+  boodong: {id: 'boodong', label: 'Boodong', path: 'sfx/library/boodong.mp3', use: '轻提示、状态确认、平台扶持或反馈标签', defaultVolume: 0.09},
+  numberChange: {id: 'numberChange', label: 'Number change', path: 'sfx/library/number-change.mp3', use: '数字滚动、收入/账号/视频数量等增长动画的同步音效', defaultVolume: 0.27},
+  pageTurn: {id: 'pageTurn', label: 'Page turn', path: 'sfx/library/page-turn.mp3', use: 'PPT、新闻截图和网页证据的翻页或页面切换', defaultVolume: 0.08},
+};
+
+export type SfxCue = {
+  id: SfxId;
+  at: number;
+  duration?: number;
+  volume?: number;
+  note: string;
+};
+
+/**
+ * 本期按口播语义和视觉节点布置的音效 cue。
+ * at 为秒，渲染时统一转换为全局 30fps 帧，不重新 seek 主口播视频。
+ */
+export const AUG25_SFX_CUES: SfxCue[] = [
+  {id: 'keyboardTyping', at: 8.27, duration: 28, volume: 0.055, note: '评论区/创作者反馈开始出现'},
+  {id: 'error', at: 12.80, duration: 24, volume: 0.075, note: '“想要放弃了”负向结果'},
+  {id: 'woosh', at: 15.60, duration: 30, volume: 0.10, note: '转折：机会来了'},
+  {id: 'swish', at: 35.53, duration: 24, volume: 0.11, note: '重复主论点/普通创作者章节进入'},
+  {id: 'cashRegister', at: 43.93, duration: 48, volume: 0.09, note: '“月入过万”数字结果出现'},
+  {id: 'boodong', at: 48.17, duration: 24, volume: 0.075, note: '爆款证明段开始显形'},
+  {id: 'boodong', at: 50.43, duration: 24, volume: 0.075, note: '“涨粉速度特别快”状态确认'},
+  {id: 'woosh', at: 57.95, duration: 28, volume: 0.10, note: 'AI漫剧与短视频成本对比切换'},
+  {id: 'error', at: 59.30, duration: 24, volume: 0.07, note: '“大几千块/产能慢”成本压力'},
+  {id: 'cashRegister', at: 66.63, duration: 42, volume: 0.085, note: '“几十块”成本优势出现'},
+  {id: 'boodong', at: 70.10, duration: 24, volume: 0.075, note: '免费额度/15秒30秒状态确认'},
+  {id: 'swish', at: 73.10, duration: 24, volume: 0.10, note: '个人创作者章节进入'},
+  {id: 'boodong', at: 76.63, duration: 22, volume: 0.07, note: '平台流量补贴出现'},
+  {id: 'boodong', at: 79.27, duration: 22, volume: 0.07, note: '话题助力出现'},
+  {id: 'woosh', at: 84.07, duration: 28, volume: 0.10, note: '四种变现方式章节切换'},
+  {id: 'mouseClick', at: 84.10, duration: 18, volume: 0.06, note: '第一个变现节点建立'},
+  {id: 'mouseClick', at: 84.90, duration: 18, volume: 0.06, note: '第二个变现节点建立'},
+  {id: 'mouseClick', at: 85.70, duration: 18, volume: 0.06, note: '第三个变现节点建立'},
+  {id: 'mouseClick', at: 86.50, duration: 18, volume: 0.06, note: '第四个变现节点建立'},
+  {id: 'swish', at: 89.23, duration: 24, volume: 0.10, note: '第一种：平台流量分成'},
+  {id: 'keyboardTyping', at: 98.63, duration: 28, volume: 0.055, note: '输入提示词'},
+  {id: 'mouseClick', at: 101.73, duration: 18, volume: 0.06, note: '制作过程/工作流节点确认'},
+  {id: 'keyboardTyping', at: 103.90, duration: 28, volume: 0.055, note: 'Skill 文本/工作流变现'},
+  {id: 'woosh', at: 107.13, duration: 28, volume: 0.10, note: '第三种：平台推广奖励'},
+  {id: 'boodong', at: 110.55, duration: 22, volume: 0.065, note: 'Flova logo出现'},
+  {id: 'boodong', at: 111.35, duration: 22, volume: 0.065, note: 'LibTV logo出现'},
+  {id: 'boodong', at: 112.15, duration: 22, volume: 0.065, note: '小云雀 logo出现'},
+  {id: 'sua', at: 115.03, duration: 22, volume: 0.095, note: 'Flova招募计划证据素材切入'},
+  {id: 'mouseClick', at: 119.07, duration: 18, volume: 0.06, note: '教程达人招募计划重点区域'},
+  {id: 'cashRegister', at: 126.43, duration: 42, volume: 0.08, note: '免费积分收益出现'},
+  {id: 'boodong', at: 129.63, duration: 24, volume: 0.07, note: '互动奖励出现'},
+  {id: 'cashRegister', at: 136.57, duration: 42, volume: 0.09, note: '“一条互动是5毛钱”数字出现'},
+  {id: 'swish', at: 139.47, duration: 24, volume: 0.10, note: '第四种：广告植入章节进入'},
+  {id: 'error', at: 151.90, duration: 24, volume: 0.07, note: '劝阻继续卷AI短剧/漫剧'},
+  {id: 'woosh', at: 154.57, duration: 26, volume: 0.095, note: '最终方向结论转入'},
+];
+
+

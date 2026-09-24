@@ -1,12 +1,8 @@
-node_modules/
-out/
-output/
-public/media/
-public/production/
-*.mp4
-*.mov
-*.mkv
-*.avi
-*.wav
-*.zip
-*.7z
+# Do not commit personal editing assets, renders, caches, credentials, or environment files.
+**/renders/
+**/public/materials/
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db

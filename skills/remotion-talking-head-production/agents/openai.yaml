@@ -1,0 +1,6 @@
+interface:
+  display_name: "Remotion口播包装制作"
+  short_description: "三阶段口播剪辑：SRT语义分析、素材与MG组件、30秒预览与成片"
+  default_prompt: "Use $remotion-talking-head-production to 按已确认的口播剪辑规则分析SRT、准备素材、生成脚本、完成素材准备、脚本、预览与成片。"
+policy:
+  allow_implicit_invocation: true

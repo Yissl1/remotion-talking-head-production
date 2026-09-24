@@ -1,0 +1,6 @@
+interface:
+  display_name: "抖音口播剪辑"
+  short_description: "口播拆解、人物缩放、素材穿插与 MG 动效"
+  default_prompt: "Use $video-edit to analyze real talking-head audio, build a cue map, create safe dynamic speaker windows, animate real b-roll continuously, preview keyframes before rendering, and verify overlaps and endings."
+policy:
+  allow_implicit_invocation: true
